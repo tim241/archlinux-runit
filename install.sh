@@ -23,7 +23,7 @@ packages=('xorg-server' 'xf86-input-libinput' 'pulseaudio' \
 build_packages=('polkit-consolekit-git'
     'consolekit-git' 'dbus-git' 'dhcpcd-git'
     'eudev-git' 'lib32-eudev-git' 'networkmanager-consolekit'
-    'runit' 'void-runit' 'procps-ng-git')
+    'runit' 'void-runit-git' 'procps-ng-git')
 # get latest pacman-src pkgbuild
 if [ ! -f packages/pacman-src-git/PKGBUILD ]
 then
