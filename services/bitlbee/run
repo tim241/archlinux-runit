@@ -1,0 +1,2 @@
+[ ! -d "/run/bitlbee/" ] && mkdir -p /run/bitlbee
+exec bitlbee -D
