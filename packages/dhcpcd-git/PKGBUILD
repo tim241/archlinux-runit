@@ -1,0 +1,55 @@
+pkgname=dhcpcd
+pkgver=7.0.3.r10.g139243b2
+pkgrel=1
+pkgdesc="RFC2131 compliant DHCP client daemon. Compiled without udev support"
+url="http://roy.marples.name/projects/dhcpcd/"
+arch=('i686' 'x86_64')
+license=('BSD')
+depends=('glibc' 'sh')
+optdepends=('openresolv: resolvconf support')
+provides=('dhcpcd' 'dhcp-client')
+conflicts=('dhcpcd')
+backup=('etc/dhcpcd.conf')
+options=('emptydirs')  # We Need the Empty /var/lib/dhcpcd Directory
+source=("git+https://roy.marples.name/git/dhcpcd.git")
+sha1sums=('SKIP')
+
+pkgver() {
+  cd "dhcpcd"
+
+  git describe --long --tags | sed 's/^dhcpcd-//;s/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+  cd "${srcdir}/dhcpcd"
+
+  # configure variables
+  ./configure \
+      --prefix=/usr \
+      --sysconfdir=/etc \
+      --sbindir=/usr/bin \
+      --libexecdir=/usr/lib/dhcpcd \
+      --dbdir=/var/lib/dhcpcd \
+      --rundir=/run \
+      --without-udev
+
+  # Build
+  make
+}
+
+check() {
+  cd "${srcdir}/dhcpcd"
+
+  make test
+}
+
+package() {
+  cd "${srcdir}/dhcpcd"
+  make DESTDIR="${pkgdir}" install
+
+  # Install License
+  install -d "$pkgdir/usr/share/licenses/$pkgname"
+
+  # Set Options in /etc/dhcpcd.conf
+  echo noipv4ll >> "${pkgdir}/etc/dhcpcd.conf" # Disable ip4vall
+}

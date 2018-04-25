@@ -1,0 +1,4 @@
+#!/bin/sh
+[ ! -d /run/dbus ] && install -m755 -g 81 -o 81 -d /run/dbus
+dbus-uuidgen --ensure
+exec dbus-daemon --system --nofork --nopidfile

@@ -1,0 +1,21 @@
+_pkgname="void-runit"
+pkgname="void-runit-git"
+pkgver=1
+pkgrel=0
+pkgdesc='runit init scripts for void'
+url='https://github.com/voidlinux/void-runit'
+license=('none')
+arch=('i686' 'x86_64')
+depends=('bash' 'procps-ng')
+source=("git://github.com/voidlinux/${_pkgname}")
+md5sums=('SKIP')
+build() {
+    cd "${_pkgname}"
+    make
+}
+package() {
+    cd "${_pkgname}"
+    make install DESTDIR="$pkgdir" PREFIX="/usr"
+}
+
+# vim: ft=sh syn=sh sw=2 ts=2 et
