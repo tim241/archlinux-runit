@@ -1,10 +1,20 @@
 #!/usr/bin/env bash
 set -e
-if [ -d "bin" ]
-then
-    echo "=>> Cleaning"
-    bash clean.sh
-fi
+# Define colors
+_color_white='\033[1;37m'
+_color_green='\033[1;32m'
+_color_red='\033[1;31m'
+_color_yel='\033[0;33m'
+_color_blue='\033[0;34m'
+_color_reset='\033[0m' 
+# print text
+function _print() {
+     echo -e "\\n$*\\n"
+}
+# Print white text
+function _wprint() {
+    _print "${_color_green}=>>${_color_reset} ${_color_white}$* ${_color_reset}"
+}
 # services that need to be enabled
 services=('dbus' 'dhcpcd')
 # packages that need to be recompiled because they are compiled on systemd
@@ -14,10 +24,10 @@ build_packages=('polkit-consolekit-git'
     'consolekit-git' 'dbus-git' 'dhcpcd-git'
     'eudev-git' 'lib32-eudev-git' 'networkmanager-consolekit'
     'runit' 'void-runit' 'procps-ng-git')
-
+# get latest pacman-src pkgbuild
 if [ ! -f packages/pacman-src-git/PKGBUILD ]
 then
-    echo -e "\\n=>> Downloading latest pacman-src-git PKGBUILD..\\n"
+    _wprint "Downloading latest pacman-src-git PKGBUILD.."
     mkdir packages/pacman-src-git
     curl https://raw.githubusercontent.com/tim241/pacman-src/master/package/PKGBUILD > packages/pacman-src-git/PKGBUILD
 fi
@@ -27,14 +37,19 @@ export PKGDEST="$cdir/bin"
 mkdir -p bin
 for package in ${build_packages[@]}
 do 
-    echo -e "\\n=>> Building $package\\n"
     cd "packages/$package"
-    makepkg -sc 
+    if [ ! -f "$cdir/bin"/$(makepkg --packagelist | grep $arch | head -1)* ]
+    then
+        _wprint "Building ${_color_blue}$package"
+        makepkg -sc
+        _wprint "Installing ${_color_blue}$package"
+        sudo pacman -U "$cdir/bin"/$(makepkg --packagelist | grep $arch | head -1)*
+    fi
     cd "$cdir"
 done
-echo -e "\\n=>> Installing packages!\\n"
+_wprint "Installing packages!"
 sudo pacman --force -U bin/*pkg*
-echo -e "\\n=>> Copying services"
+_wprint "Copying services"
 for service in $(cd services && ls -1)
 do
     if [ ! -d "/etc/sv/$service" ]
@@ -42,22 +57,25 @@ do
         sudo cp -r "es/$service" "/etc/sv/$service"
     fi
 done
-echo -e "\\n=>> Enabling required services..\\n"
+_wprint "Enabling required services.."
 for service in "${service[@]}"
 do
-    echo "  -> enabling $service"
-    sudo ln -s /etc/sv/$service /var/service/
+    if [ ! -d "/var/service/$service" ]
+    then
+        _print "  ${_color_blue}->${_color_white} enabling ${_color_blue}$service${_color_reset}"
+        sudo ln -s /etc/sv/$service /var/service/
+    fi
 done
-echo -e "\\n=>> Configuring pacman-src!\\n"
+_wprint "Configuring pacman-src!"
 pacman-src -u
-echo -e "\\n=>> Recompiling packages"
+_wprint "Recompiling packages"
 for package in "${packages[@]}"
 do
     if pacman -Qq $package > /dev/null 2>&1
     then
-        echo "  -> Recompiling $package"
+        _print "  ${_color_blue}->${_color_white} recompiling ${_color_blue}$package${_color_reset}" 
         pacman-src -snmf $package
     fi
 done
-echo -e "\\nCompleted, please add 'init=/sbin/runit' to your bootline in your bootloader before rebooting!"
+_wprint "Completed, please add 'init=/sbin/runit' to your bootline in your bootloader before rebooting!"
 
