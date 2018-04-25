@@ -35,11 +35,11 @@ done
 echo -e "\\n=>> Installing packages!\\n"
 sudo pacman --force -U bin/*pkg*
 echo -e "\\n=>> Copying services"
-for service in services/*
+for service in $(cd services && ls -1)
 do
     if [ ! -d "/etc/sv/$service" ]
     then
-        sudo cp -r "services/$service" "/etc/sv/$service"
+        sudo cp -r "es/$service" "/etc/sv/$service"
     fi
 done
 echo -e "\\n=>> Enabling required services..\\n"
