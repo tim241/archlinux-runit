@@ -41,7 +41,7 @@ do
     if [ ! -f "$cdir/bin"/$(makepkg --packagelist | grep $arch | head -1)* ]
     then
         _wprint "Building ${_color_blue}$package"
-        makepkg -sc
+        makepkg -sc --nocheck
         _wprint "Installing ${_color_blue}$package"
         sudo pacman -U "$cdir/bin"/$(makepkg --packagelist | grep $arch | head -1)*
     fi
@@ -78,4 +78,4 @@ do
     fi
 done
 _wprint "Completed, please add 'init=/sbin/runit' to your bootline in your bootloader before rebooting!"
-
+_wprint "Also add 'IgnorePkg = systemd libsystemd systemd-tools lib32-systemd' to your pacman.conf!"
