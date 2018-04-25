@@ -1,0 +1,48 @@
+pkgname=procps-ng-git
+pkgver=1
+pkgrel=1
+pkgdesc='Utilities for monitoring your system and its processes'
+url='https://gitlab.com/procps-ng/procps'
+license=(GPL LGPL)
+arch=(x86_64)
+groups=(base)
+depends=(ncurses)
+conflicts=(procps procps-ng sysvinit-tools)
+provides=(procps procps-ng sysvinit-tools)
+replaces=(procps procps-ng sysvinit-tools)
+install=install
+source=(git+https://gitlab.com/procps-ng/procps)
+sha256sums=('SKIP')
+
+pkgver() {
+   cd procps
+   git describe --always | sed -e 's|-|.|g'
+}
+
+prepare() {
+  cd procps
+  sed 's:<ncursesw/:<:g' -i watch.c
+  ./autogen.sh
+}
+
+build() {
+  cd procps
+  ./configure \
+    --prefix=/usr \
+    --exec-prefix=/ \
+    --sysconfdir=/etc \
+    --libdir=/usr/lib \
+    --bindir=/usr/bin \
+    --sbindir=/usr/bin \
+    --enable-watch8bit \
+    --without-systemd \
+    --disable-modern-top \
+    --disable-kill
+
+  make
+}
+
+package() {
+  cd procps
+  make DESTDIR="$pkgdir" install
+}

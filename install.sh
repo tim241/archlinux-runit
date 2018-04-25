@@ -9,11 +9,11 @@ fi
 services=('dbus' 'dhcpcd')
 # packages that need to be recompiled because they are compiled on systemd
 packages=('xorg-server' 'xf86-input-libinput' 'pulseaudio' \
-    'pkgfile' 'libgudev' 'procps-ng')
+    'pkgfile' 'libgudev')
 build_packages=('polkit-consolekit-git'
     'consolekit-git' 'dbus-git' 'dhcpcd-git'
     'eudev-git' 'lib32-eudev-git' 'networkmanager-consolekit'
-    'runit' 'void-runit')
+    'runit' 'void-runit' 'procps-ng-git')
 
 if [ ! -f packages/pacman-src-git/PKGBUILD ]
 then
