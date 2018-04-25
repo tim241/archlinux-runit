@@ -10,6 +10,11 @@ services=('dbus' 'dhcpcd')
 # packages that need to be recompiled because they are compiled on systemd
 packages=('xorg-server' 'xf86-input-libinput' 'pulseaudio' \
     'pkgfile' 'libgudev' 'procps-ng')
+build_packages=('polkit-consolekit-git'
+    'consolekit-git' 'dbus-git' 'dhcpcd-git'
+    'eudev-git' 'lib32-eudev-git' 'networkmanager-consolekit'
+    'runit' 'void-runit')
+
 if [ ! -f packages/pacman-src-git/PKGBUILD ]
 then
     echo -e "\\n=>> Downloading latest pacman-src-git PKGBUILD..\\n"
@@ -20,10 +25,10 @@ cdir="$(pwd)"
 arch="$(uname -m)"
 export PKGDEST="$cdir/bin"
 mkdir -p bin
-for package in $(find . -name "PKGBUILD")
+for package in ${build_packages[@]}
 do 
-    echo -e "\\n=>> Building in $(dirname $package)\\n"
-    cd $(dirname $package)
+    echo -e "\\n=>> Building $package\\n"
+    cd "packages/$package"
     makepkg -sc 
     cd "$cdir"
 done
