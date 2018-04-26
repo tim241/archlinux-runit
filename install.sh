@@ -58,7 +58,7 @@ do
     fi
 done
 _wprint "Enabling required services.."
-for service in "${service[@]}"
+for service in "${services[@]}"
 do
     if [ ! -d "/var/service/$service" ]
     then
