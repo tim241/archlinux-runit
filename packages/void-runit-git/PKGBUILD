@@ -9,6 +9,10 @@ arch=('i686' 'x86_64')
 depends=('bash' 'procps-ng')
 source=("git://github.com/voidlinux/${_pkgname}")
 md5sums=('SKIP')
+prepare() {
+    cd "${_pkgname}"
+    sed -i "s_Welcome to Void!_Welcome to Arch Linux!_g" 1
+}
 build() {
     cd "${_pkgname}"
     make
