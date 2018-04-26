@@ -5,8 +5,8 @@ pkgdesc="The userspace dev tools (udev) forked by Gentoo"
 pkgver=20180310
 pkgrel=1
 provides=('eudev')
-replaces=('eudev' 'udev' 'systemd' 'libsystemd' 'systemd-tools')
-conflicts=('eudev' 'udev' 'systemd' 'libsystemd' 'systemd-tools')
+replaces=('eudev' 'udev' 'systemd' 'systemd-tools')
+conflicts=('eudev' 'udev' 'systemd' 'systemd-tools')
 groups=('base')
 arch=('i686' 'x86_64')
 url="https://github.com/gentoo/eudev"
@@ -48,7 +48,10 @@ prepare() {
               --sysconfdir=/etc \
               --libdir=/usr/lib \
               --sbindir=/usr/bin \
-              --enable-introspection
+              --enable-introspection \
+              --enable-kmod \
+		      --enable-manpages \
+		      --enable-split-usr
 }
 build() {
   cd "${srcdir}/${_gitname}"
@@ -83,7 +86,6 @@ package() {
   udevver=$(grep UDEV_VERSION configure.ac | egrep -o "[0-9]{3}")
   provides+=("udev=$udevver")
   provides+=("systemd=$udevver")
-  provides+=("libsystemd=$udevver")
   provides+=("systemd-tools=$udevver")
 }
 

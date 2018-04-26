@@ -1,0 +1,15 @@
+pkgname=('lib32-systemd')
+pkgver=1
+pkgrel=0
+pkgdesc='libsystemd dummy package'
+license=('none')
+arch=('i686' 'x86_64')
+depends=('bash' 'procps-ng')
+package() {
+    mkdir -p "$pkgdir/usr/"
+    cp -r ../files/usr/lib32/ "$pkgdir/usr/lib32"
+    cd "$pkgdir/usr/lib32"
+    rm *udev*
+}
+
+# vim: ft=sh syn=sh sw=2 ts=2 et

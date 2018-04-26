@@ -7,8 +7,6 @@ url="https://github.com/gentoo/eudev"
 license=('GPL')
 depends=('lib32-glib2' 'eudev-git')
 makedepends=('git' 'gcc-multilib' 'lib32-util-linux' 'gobject-introspection' 'gperf')
-replaces=('lib32-systemd')
-conflicts=('lib32-systemd')
 options=(!makeflags !libtool)
 source=('git://github.com/gentoo/eudev.git')
 md5sums=('SKIP')
@@ -60,6 +58,5 @@ package() {
 
   # Getting udev version
   udevver=$(grep UDEV_VERSION configure.ac | egrep -o "[0-9]{3}")
-  provides+=("lib32-systemd=${udevver}")
 }
 

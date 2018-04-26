@@ -23,7 +23,7 @@ packages=('xorg-server' 'xf86-input-libinput' 'pulseaudio' \
 build_packages=('polkit-consolekit-git'
     'consolekit-git' 'dbus-git' 'dhcpcd-git'
     'eudev-git' 'lib32-eudev-git' 'networkmanager-consolekit'
-    'runit' 'void-runit-git' 'procps-ng-git')
+    'runit' 'void-runit-git' 'procps-ng-git' 'libsystemd-dummy' 'lib32-systemd-dummy')
 # get latest pacman-src pkgbuild
 if [ ! -f packages/pacman-src-git/PKGBUILD ]
 then
@@ -33,6 +33,7 @@ then
 fi
 cdir="$(pwd)"
 arch="$(uname -m)"
+unset NO_INSTALL
 export PKGDEST="$cdir/bin"
 mkdir -p bin
 for package in ${build_packages[@]}
@@ -40,10 +41,19 @@ do
     cd "packages/$package"
     if [ ! -f "$cdir/bin"/$(makepkg --packagelist | grep $arch | head -1)* ]
     then
+        if [ -f "prepare.sh" ]
+        then
+            _wprint "Preparing ${_color_blue}$package"
+            source prepare.sh
+        fi
         _wprint "Building ${_color_blue}$package"
         makepkg -sc --nocheck
-        _wprint "Installing ${_color_blue}$package"
-        sudo pacman -U "$cdir/bin"/$(makepkg --packagelist | grep $arch | head -1)*
+        if [ "x$NO_INSTALL" != "xyes" ]
+        then
+            _wprint "Installing ${_color_blue}$package"
+            sudo pacman -U "$cdir/bin"/$(makepkg --packagelist | grep $arch | head -1)*
+        fi
+        unset NO_INSTALL
     fi
     cd "$cdir"
 done
@@ -54,7 +64,7 @@ for service in $(cd services && ls -1)
 do
     if [ ! -d "/etc/sv/$service" ]
     then
-        sudo cp -r "es/$service" "/etc/sv/$service"
+        sudo cp -r "services/$service" "/etc/sv/$service"
     fi
 done
 _wprint "Enabling required services.."
@@ -66,6 +76,7 @@ do
         sudo ln -s /etc/sv/$service /var/service/
     fi
 done
+mkdir tmp
 _wprint "Configuring pacman-src!"
 pacman-src -u
 _wprint "Recompiling packages"
