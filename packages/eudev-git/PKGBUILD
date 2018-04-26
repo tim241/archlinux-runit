@@ -34,24 +34,24 @@ pkgver()
   git log -1 --format="%ci" HEAD | cut -d\  -f1 | tr -d '-'
 }
 
-build() {
+prepare() {
   cd "${srcdir}/${_gitname}"
 
   if [ -f "Makefile" ];then
     msg2 "Cleaning up..."
     make clean
   fi
-
   msg2 "Configuring sources..."
-  ./autogen.sh
+  autoreconf -fi
   ./configure --prefix=/usr \
               --with-rootprefix=/usr \
               --sysconfdir=/etc \
               --libdir=/usr/lib \
               --sbindir=/usr/bin \
-              --enable-gudev \
               --enable-introspection
-
+}
+build() {
+  cd "${srcdir}/${_gitname}"
   msg2 "Compiling..."
   make
 }
