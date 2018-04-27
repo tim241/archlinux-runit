@@ -20,16 +20,19 @@ function _installpkgs() {
     _wprint "Installing packages!"
     sudo pacman --force -U "$cdir"/bin/*pkg*
 }
-
+if pacman -Qs netctl > /dev/null 2>&1
+then
+    sudo pacman -R netctl
+fi
 # services that need to be enabled
 services=('dbus' 'dhcpcd')
 # packages that need to be recompiled because they are compiled on systemd
 packages=('xorg-server' 'xf86-input-libinput' 'pulseaudio' \
     'pkgfile' 'libgudev')
-build_packages=('polkit-consolekit-git'
+build_packages=('libsystemd-dummy' 'lib32-systemd-dummy' 'eudev-git' 'lib32-eudev-git' 'polkit-consolekit-git'
     'consolekit-git' 'dbus-git' 'dhcpcd-git'
-    'eudev-git' 'lib32-eudev-git' 'networkmanager-consolekit'
-    'runit' 'void-runit-git' 'procps-ng-git' 'libsystemd-dummy' 'lib32-systemd-dummy')
+    'networkmanager-consolekit' 'runit' 
+    'void-runit-git' 'procps-ng-git' 'pacman-src-git')
 # get latest pacman-src pkgbuild
 if [ ! -f packages/pacman-src-git/PKGBUILD ]
 then
@@ -38,7 +41,6 @@ then
     curl https://raw.githubusercontent.com/tim241/pacman-src/master/package/PKGBUILD > packages/pacman-src-git/PKGBUILD
 fi
 arch="$(uname -m)"
-unset NO_INSTALL
 export PKGDEST="$cdir/bin"
 mkdir -p bin
 for package in ${build_packages[@]}
@@ -57,12 +59,12 @@ do
         fi
         _wprint "Building ${_color_blue}$package"
         makepkg -sc --nocheck
-        if [ "x$NO_INSTALL" != "xyes" ]
+        if [ "x$INSTALL" = "xyes" ]
         then
             _wprint "Installing ${_color_blue}$package"
             sudo pacman -U "$cdir/bin"/$(makepkg --packagelist | grep $arch | head -1)*
         fi
-        unset NO_INSTALL
+        unset INSTALL
     fi
     cd "$cdir"
 done
@@ -84,7 +86,6 @@ do
         sudo ln -s /etc/sv/$service /var/service/
     fi
 done
-mkdir tmp
 _wprint "Configuring pacman-src!"
 pacman-src -u
 _wprint "Recompiling packages"

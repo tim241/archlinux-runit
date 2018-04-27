@@ -1,5 +1,5 @@
 pkgname=procps-ng-git
-pkgver=1
+pkgver=v3.3.14.1.gca07bca
 pkgrel=1
 pkgdesc='Utilities for monitoring your system and its processes'
 url='https://gitlab.com/procps-ng/procps'

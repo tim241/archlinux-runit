@@ -1,5 +1,5 @@
 pkgname=dhcpcd
-pkgver=7.0.3.r10.g139243b2
+pkgver=7.0.3.r11.g96ef7719
 pkgrel=1
 pkgdesc="RFC2131 compliant DHCP client daemon. Compiled without udev support"
 url="http://roy.marples.name/projects/dhcpcd/"
