@@ -20,6 +20,10 @@ build() {
 package() {
     cd "${_pkgname}"
     make install DESTDIR="$pkgdir" PREFIX="/usr"
+    mkdir -p "$pkgdir/usr/bin" && cd "$pkgdir/usr/bin"
+    ln -s ../sbin/reboot   reboot
+    ln -s ../sbin/poweroff poweroff
+    ln -s ../sbin/shutdown shutdown
 }
 
 # vim: ft=sh syn=sh sw=2 ts=2 et
