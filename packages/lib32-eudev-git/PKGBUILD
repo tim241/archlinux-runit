@@ -20,7 +20,7 @@ pkgver()
   git log -1 --format="%ci" HEAD | cut -d\  -f1 | tr -d '-'
 }
 
-build() {
+prepare() {
   cd "${srcdir}/${_gitname}"
 
   export CC="gcc -m32"
@@ -31,18 +31,25 @@ build() {
     msg2 "Cleaning up..."
     make clean
   fi
-
   msg2 "Configuring sources..."
-  ./autogen.sh
+  autoreconf -fi
   ./configure --prefix=/usr \
               --with-rootprefix=/usr \
               --sysconfdir=/etc \
               --libdir=/usr/lib32 \
               --sbindir=/usr/bin \
-	      --disable-kmod \
-              --enable-gudev \
               --enable-introspection \
-              --disable-manpages
+              --disable-kmod \
+              --disable-manpages \
+              --enable-split-usr
+}
+
+build() {
+  cd "${srcdir}/${_gitname}"
+
+  export CC="gcc -m32"
+  export CXX="g++ -m32"
+  export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
 
   msg2 "Compiling..."
   make
