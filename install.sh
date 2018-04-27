@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -e
+cdir="$(pwd)"
 # Define colors
 _color_white='\033[1;37m'
 _color_green='\033[1;32m'
@@ -15,6 +16,11 @@ function _print() {
 function _wprint() {
     _print "${_color_green}=>>${_color_reset} ${_color_white}$* ${_color_reset}"
 }
+function _installpkgs() {
+    _wprint "Installing packages!"
+    sudo pacman --force -U "$cdir"/bin/*pkg*
+}
+
 # services that need to be enabled
 services=('dbus' 'dhcpcd')
 # packages that need to be recompiled because they are compiled on systemd
@@ -31,7 +37,6 @@ then
     mkdir packages/pacman-src-git
     curl https://raw.githubusercontent.com/tim241/pacman-src/master/package/PKGBUILD > packages/pacman-src-git/PKGBUILD
 fi
-cdir="$(pwd)"
 arch="$(uname -m)"
 unset NO_INSTALL
 export PKGDEST="$cdir/bin"
@@ -41,6 +46,10 @@ do
     cd "packages/$package"
     if [ ! -f "$cdir/bin"/$(makepkg --packagelist | grep $arch | head -1)* ]
     then
+        if [[ $package = lib32-* ]]
+        then
+            _installpkgs
+        fi
         if [ -f "prepare.sh" ]
         then
             _wprint "Preparing ${_color_blue}$package"
@@ -57,8 +66,7 @@ do
     fi
     cd "$cdir"
 done
-_wprint "Installing packages!"
-sudo pacman --force -U bin/*pkg*
+_installpkgs
 _wprint "Copying services"
 for service in $(cd services && ls -1)
 do
