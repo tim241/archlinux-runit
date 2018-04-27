@@ -1,10 +1,13 @@
 pkgname=libsystemd
-pkgver=1
-pkgrel=0
+pkgver=238.76
+pkgrel=1
 pkgdesc='libsystemd dummy package'
 license=('none')
 arch=('x86_64')
 depends=('bash' 'procps-ng')
+pkgver() {
+    cat ../version
+}
 package() {
     mkdir -p "$pkgdir/usr/"
     cp -r ../files/usr/lib/ "$pkgdir/usr/lib"
