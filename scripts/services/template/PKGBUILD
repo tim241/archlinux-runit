@@ -1,0 +1,11 @@
+pkgname=@PKGNAME@-runit
+pkgver=1
+pkgrel=1
+license=('none')
+arch=('any')
+depends=('@PKGDEPENDS@' 'runit')
+source=('run')
+md5sums=('@MD5SUM@')
+package() {
+    install -D -m=755 ../run "$pkgdir/etc/sv/@PKGNAME@/run"
+}

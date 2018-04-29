@@ -7,6 +7,7 @@ url='https://github.com/voidlinux/void-runit'
 license=('none')
 arch=('i686' 'x86_64')
 depends=('bash' 'procps-ng')
+groups=('archlinux-runit')
 source=("git://github.com/voidlinux/${_pkgname}")
 md5sums=('SKIP')
 prepare() {

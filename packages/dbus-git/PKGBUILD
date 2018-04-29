@@ -1,7 +1,7 @@
 # Maintainer: Chocobo1 <chocobo1 AT archlinux DOT net>
 
 pkgname=dbus-git
-pkgver=1.13.2.r67.g2390a325
+pkgver=1.13.2.r68.g9391d769
 pkgrel=1
 pkgdesc="Message bus system"
 arch=('i686' 'x86_64')

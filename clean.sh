@@ -1,2 +1,2 @@
-#!/usr/bin/env bash
-rm -rf bin
+#!/usr/bin/env bash 
+rm -rf bin packages/services packages/*/*.pkg* packages/*/*/*.pkg*

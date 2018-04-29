@@ -8,6 +8,7 @@ license=('GPL')
 depends=('lib32-glib2' 'eudev-git')
 makedepends=('git' 'gcc-multilib' 'lib32-util-linux' 'gobject-introspection' 'gperf')
 options=(!makeflags !libtool)
+groups=('archlinux-runit')
 source=('git://github.com/gentoo/eudev.git')
 md5sums=('SKIP')
 _gitname="eudev"

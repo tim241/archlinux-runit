@@ -5,6 +5,7 @@ pkgdesc='libsystemd dummy package'
 license=('none')
 arch=('x86_64')
 depends=('bash' 'procps-ng')
+groups=('archlinux-runit')
 pkgver() {
     cat ../version
 }
@@ -12,7 +13,7 @@ package() {
     mkdir -p "$pkgdir/usr/"
     cp -r ../files/usr/lib/ "$pkgdir/usr/lib"
     cd "$pkgdir/usr/lib"
-    rm *udev*
+    rm *udev* 
 }
 
 
