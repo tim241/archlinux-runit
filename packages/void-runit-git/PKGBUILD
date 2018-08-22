@@ -3,12 +3,12 @@ pkgname="void-runit-git"
 pkgver=1
 pkgrel=0
 pkgdesc='runit init scripts for void'
-url='https://github.com/voidlinux/void-runit'
+url='https://github.com/void-linux/void-runit'
 license=('none')
 arch=('i686' 'x86_64')
 depends=('bash' 'procps-ng')
 groups=('archlinux-runit')
-source=("git://github.com/voidlinux/${_pkgname}")
+source=("git://github.com/void-linux/${_pkgname}")
 md5sums=('SKIP')
 prepare() {
     cd "${_pkgname}"
